@@ -18,7 +18,7 @@ class AdsController extends Controller
      */
     public function index()
     {
-        $ads = Ad::orderBy("created_at", "DESC")->get();
+        $ads = Ad::orderBy("premium_ad", "DESC")->orderBy("created_at", "DESC")->get();
         $categories = Category::all();
         $compact = compact("ads", "categories");
 
@@ -117,11 +117,6 @@ class AdsController extends Controller
         $compact = compact("ads", "categories");
         
         return view("ads/index", $compact);
-    }
-
-    public function premium(Ad $ad)
-    {
-        return view("ads/premium", ["ad" => $ad]);
     }
 
     public function premium_update(Ad $ad, StorePremiumRequest $request)

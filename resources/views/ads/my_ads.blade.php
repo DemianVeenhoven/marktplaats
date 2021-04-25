@@ -17,7 +17,12 @@
 
                 <div class="ads">
                     @foreach ($ads as $ad)
-                        <div class="ad">
+                        @if ($ad->premium_ad == 0)
+                            <div class="ad">
+                        @else
+                            <div class="premium">
+                        @endif
+                        
                             <p class="ad_title">{{ $ad->title }}</p>
                             <br>
                             <br>
@@ -53,7 +58,16 @@
                             <br>
                             <br>
 
-                            <button style = "float:centre"><a href="{{ route('ads.premium', $ad->id) }}">Upgrade ad to premium</a></button>
+                            @if ($ad->premium_ad == 0)
+                                <form method = "POST" action = "/ads/{{ $ad->id }}/premium_update" enctype = "multipart/form-data">
+                                    @csrf
+                                    @method ("PUT")
+
+                                    <input name = "premium_ad" type = "hidden" value = "1">
+
+                                    <button type = "submit">Upgrade ad to premium</button>
+                                </form>
+                            @endif
                             <br>
                             <br>
 

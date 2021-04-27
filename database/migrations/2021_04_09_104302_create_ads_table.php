@@ -20,6 +20,10 @@ class CreateAdsTable extends Migration
             $table->text("body");
             $table->string("image_path")->nullable();
             $table->boolean("premium_ad")->default(0);
+            $table->boolean("sold")->default(0);
+            $table->float("fee")->default(0.00);
+            $table->bigInteger('user_id')->nullable()->unsigned();
+                $table->foreign("user_id")->references('id')->on("users")->onDelete("cascade");
             $table->timestamps();
         });
     }

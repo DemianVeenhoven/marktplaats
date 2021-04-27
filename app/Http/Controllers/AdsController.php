@@ -7,7 +7,7 @@ use App\Models\Ad;
 use App\Models\Category;
 use App\Models\Bid;
 use App\Http\Requests\StoreAdRequest;
-use App\Http\Requests\StorePremiumRequest;
+use App\Http\Requests\StoreAdStatusRequest;
 
 class AdsController extends Controller
 {
@@ -18,7 +18,7 @@ class AdsController extends Controller
      */
     public function index()
     {
-        $ads = Ad::orderBy("premium_ad", "DESC")->orderBy("created_at", "DESC")->get();
+        $ads = Ad::orderBy("premium_ad", "DESC")->orderBy("created_at", "DESC")->where("sold" , 0)->get();
         $categories = Category::all();
         $compact = compact("ads", "categories");
 
@@ -97,8 +97,13 @@ class AdsController extends Controller
 
     public function myAds()
     {
-        $username = auth()->user()->name;
-        $ads = Ad::orderBy("created_at", "DESC")->where("seller", $username)->get();
+        $user = auth()->user();
+        if($user->fees->isEmpty()) {
+            $ads = $user->ads;
+        } else {
+            $ads = $user->fees;
+        }
+        
         $categories = Category::all();
         $compact = compact("ads", "categories");
 
@@ -119,7 +124,7 @@ class AdsController extends Controller
         return view("ads/index", $compact);
     }
 
-    public function premium_update(Ad $ad, StorePremiumRequest $request)
+    public function update_ad_status(Ad $ad, StoreAdStatusRequest $request)
     {
         $ad->update($request->validated());
 

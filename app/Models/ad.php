@@ -10,7 +10,7 @@ class ad extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["seller", "title", "body", "premium_ad", "image_path"];
+    protected $fillable = ["seller", "title", "body", "premium_ad", "image_path", "sold", "fee", "user_id"];
 
     public function bids()
     {
@@ -20,5 +20,10 @@ class ad extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class, "ad_category");
+    }
+
+    public function ads()
+    {
+        return $this->belongsTo(Ad::class);
     }
 }

@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'fee'
     ];
 
     /**
@@ -42,4 +43,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function ads()
+    {
+        return $this->hasMany(Ad::class)->orderBy("created_at", "DESC");
+    }
+
+    public function fees()
+    {
+        return $this->hasMany(Ad::class)->where("fee", ">", 0.00);
+    }
 }

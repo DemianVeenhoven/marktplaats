@@ -16,13 +16,13 @@
                 <br>
 
                 <div class="ads">
-                    @foreach ($ads as $ad)
+                    @forelse ($ads as $ad)
                         @if ($ad->premium_ad == 0)
                             <div class="ad">
                         @else
                             <div class="premium">
                         @endif
-                        
+
                             <p class="ad_title">{{ $ad->title }}</p>
                             <br>
                             <br>
@@ -40,26 +40,31 @@
                             <br>
 
                             <p class = "categories">Tags:</p>
-                            @foreach ($ad->categories as $category)
+                            @forelse ($ad->categories as $category)
                                 <div class = "categories">
                                     <p>{{ $category->tag }}</p>
                                 </div>
-                            @endforeach
+                            @empty
+                                <p>This ad has no tags.</p>
+                            @endforelse
                             <br>
 
-                            @foreach ($ad->bids as $bid)
+                            @forelse ($ad->bids as $bid)
                                 <div class = "bid">
                                     <p>€ {{ number_format($bid->bid,2,'.','') }} | By: {{ $bid->bidder }} | Placed on: {{ $bid->created_at }}</p>
                                 </div>
                                 <br>
-                            @endforeach
+                            @empty
+                                <p>Your ad has no bids yet.</p>
+                            @endforelse
+                            
 
                             <button style = "float:centre"><a href="{{ route('ads.edit', $ad->id) }}">Edit</a></button>
                             <br>
                             <br>
 
-                            @if ($ad->premium_ad == 0)
-                                <form method = "POST" action = "/ads/{{ $ad->id }}/premium_update" enctype = "multipart/form-data">
+                            @if ($ad->premium_ad == 0 && $ad->sold == 0)
+                                <form method = "POST" action = "/ads/{{ $ad->id }}/update_ad_status">
                                     @csrf
                                     @method ("PUT")
 
@@ -71,16 +76,61 @@
                             <br>
                             <br>
 
-                            <form method = "POST" action = "/ads/{{ $ad->id }}">
-                                @csrf
-                                @method ("DELETE")
+
+                            @if ($ad->sold == 0)
+                                @if ($ad->bids->isEmpty() || $ad->bids[0]->bid <= 500.00)
+                                    <form method = "POST" action = "/ads/{{ $ad->id }}/update_ad_status">
+                                        @csrf
+                                        @method ("PUT")
+
+                                        <input name = "sold" type = "hidden" value = "1">
+
+                                        <button type = "submit">Mark ad as sold</button>
+                                    </form>
+                                @else
+                                    @php
+                                        $highestBid = $ad->bids[0]->bid;
+                                        $fee = number_format($highestBid * 0.05,2,'.','');
+                                    @endphp
+                                    <form method = "POST" action = "/ads/{{ $ad->id }}/update_ad_status">
+                                        @csrf
+                                        @method ("PUT")
+
+                                        <input name = "sold" type = "hidden" value = "1">
+                                        <input name = "fee" type = "hidden" value = "{{ $fee }}">
+
+                                        <button type = "submit">Mark ad as sold</button>
+                                    </form>
+                                @endif   
+                            @elseif ($ad->fee > 0.00)
+                                <form method = "POST" action = "/ads/{{ $ad->id }}/update_ad_status">
+                                    @csrf
+                                    @method ("PUT")
+                                    <p>Your fee is {{ $ad->fee }}</p>
                                     
-                                <button type = "submit">Delete</button>
-                            </form>
+                                    <input name = "fee" type = "hidden" value = "0.00">
+
+                                    <button type = "submit">Pay outstanding fee</button>
+                                </form>
+                            @else
+                                <form method = "POST" action = "/ads/{{ $ad->id }}">
+                                    @csrf
+                                    @method ("DELETE")
+                                        
+                                    <button type = "submit">Delete</button>
+                                </form>
+                            @endif
                             <br>
+                            <br>
+                            
+                            
+                            <br>
+
                         </div>
                         <br>
-                    @endforeach
+                    @empty
+                        <p>You have not placed any ads yet.</p>
+                    @endforelse
                 </div>
             </div>
         </div>

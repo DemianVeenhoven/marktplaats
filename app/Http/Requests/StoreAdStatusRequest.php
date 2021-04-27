@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePremiumRequest extends FormRequest
+class StoreAdStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,9 @@ class StorePremiumRequest extends FormRequest
     public function rules()
     {
         return [
-            "premium_ad" => ["integer"]
+            "premium_ad" => ["integer"],
+            "sold" => ["integer"],
+            "fee" => ["numeric"]
         ];
     }
 }

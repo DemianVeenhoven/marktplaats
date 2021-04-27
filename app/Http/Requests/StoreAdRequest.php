@@ -24,6 +24,7 @@ class StoreAdRequest extends FormRequest
     public function rules()
     {
         return [
+            "user_id" => ["required", "integer"],
             "seller" => ["required"],
             "title" => ["required", "min:3"],
             "body" => ["required"],

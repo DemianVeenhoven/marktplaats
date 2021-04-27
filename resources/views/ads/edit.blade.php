@@ -11,7 +11,8 @@
                     <form method = "POST" action = "/ads/{{ $ad->id }}" enctype = "multipart/form-data">
                         @csrf
                         @method ("PUT")
-
+                        
+                        <input name = "user_id" type = "hidden" value = "{{ auth()->user()->id }}">
                         <input name = "seller" type = "hidden" value = "{{ auth()->user()->name }}">
 
                         <label>Title</label>

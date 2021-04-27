@@ -24,7 +24,7 @@
 						<form method="POST" id="filterForm">
 							@csrf
 
-							@foreach($categories as $category)
+							@forelse($categories as $category)
 								<input type="checkbox" name="category_ids[]" value="{{ $category->id }}">{{ $category->tag }}
 							@endforeach
 							<br>
@@ -35,7 +35,7 @@
 						<br>
 
 						<div class = "ads">
-							@foreach ($ads as $ad)
+							@forelse ($ads as $ad)
 								<div class = "ad">
 									<p class = "ad_title">{{ $ad->titel }}</p>
 									<br>
@@ -52,9 +52,21 @@
 									<p>Placed on: {{$ad->created_at}}</p>
 									<br>
 									<br>
+
+									<p class = "categories">Tags:</p>
+									@forelse ($ad->categories as $category)
+										<div class = "categories">
+											<p>{{ $category->tag }}</p>
+										</div>
+									@empty
+										<p>This ad has no tags.</p>
+									@endforelse
+									<br>
 								</div>
 								<br>
-							@endforeach
+							@empty
+								<p>There are no ads.</p>
+							@endforelse
 						</div>
 					</div>
 				</div>
@@ -85,7 +97,7 @@
 						<br>
 
 						<div class="ads">
-							@foreach ($ads as $ad)
+							@forelse ($ads as $ad)
 								<div class="ad">
 									<p class="ad_title">{{ $ad->title }}</p>
 									<br>
@@ -104,19 +116,23 @@
 									<br>
 
 									<p class = "categories">Tags:</p>
-									@foreach ($ad->categories as $category)
+									@forelse ($ad->categories as $category)
 										<div class = "categories">
 											<p>{{ $category->tag }}</p>
 										</div>
-									@endforeach
+									@empty
+										<p>This ad has no tags.</p>
+									@endforelse
 									<br>
 
-									@foreach ($ad->bids as $bid)
+									@forelse ($ad->bids as $bid)
 										<div class = "bid">
 											<p>€ {{ number_format($bid->bid,2,'.','') }} | By: {{ $bid->bidder }} | Placed on: {{ $bid->created_at }}</p>
 										</div>
 										<br>
-									@endforeach
+									@empty
+										<p>No bids have been placed on this ad.</p>
+									@endforelse
 
 									@if ($ad->seller !== auth()->user()->name)
 										<form method = "POST" action = "/ads/{{ $ad->id }}/bids">
@@ -136,7 +152,9 @@
 									@endif
 								</div>
 								<br>
-							@endforeach
+							@empty
+								<p>There are no ads.</p>
+							@endforelse
 						</div>
 					</div>
 				</div>

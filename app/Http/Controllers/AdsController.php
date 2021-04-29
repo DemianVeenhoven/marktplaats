@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Bid;
 use App\Http\Requests\StoreAdRequest;
 use App\Http\Requests\StoreAdStatusRequest;
+use Illuminate\Database\Eloquent\Builder;
 
 class AdsController extends Controller
 {
